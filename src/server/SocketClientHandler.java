@@ -7,7 +7,7 @@ import exception.AutoException;
 
 import java.io.*;
 
-public class SocketClientHandler extends Thread implements SocketClientInterface, SocketClientConstants {
+public class SocketClientHandler extends Thread implements server.SocketClientInterface, server.SocketClientConstants {
 	private BufferedReader reader;
 	private BufferedWriter writer;
 	private Socket socketClient;

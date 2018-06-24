@@ -1,7 +1,6 @@
 package util;
 
 import java.io.*;
-import java.util.Properties;
 
 import model.Automobile;
 import exception.AutoException;
