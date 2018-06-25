@@ -13,6 +13,7 @@ public abstract class ProxyAutomobile {
 	private static int threadNumber; // keep track of thread numbers
 	private util.FileIO fileIOUtil;
 	private util.StreamIO streamIOUtil;
+	public boolean threadAvailable = true;
 
 	protected ProxyAutomobile() {
 		fileIOUtil = new util.FileIO();
@@ -25,6 +26,14 @@ public abstract class ProxyAutomobile {
 		threadNumber = 0;
 	}
 
+	/* Assignment 2
+	 * 5/04/2018
+	 * UpdateAuto Implementation */
+	/** Updates an automobile option set name
+	 * @param automobileKey The automobile key
+	 * @param optionSetName The option set name
+	 * @param nameNew The new name
+	 * @return true on success and false on failure */
 	public boolean updateOptionSetName(String automobileKey, String optionSetName, String nameNew) {
 		boolean returnValue = false;
 		model.Automobile automobileObject = automobileTable.getByKey(automobileKey);
@@ -56,7 +65,9 @@ public abstract class ProxyAutomobile {
 		return returnValue;
 	}
 
-	/* CreateAuto Implementation */
+	/* Assignment 2
+	 * 5/04/2018
+	 * CreateAuto Implementation */
 	/** builds the Automobile object from a configuration file
 	 * @param fileName The file name
 	 * @param fileType the file type
@@ -95,6 +106,12 @@ public abstract class ProxyAutomobile {
 		return returnValue;
 	}
 
+	/**
+	 * Serializes the automobile as a file
+	 * @param automobileKey The automobile key
+	 * @param fileName The file name
+	 * @return true on success and false on failure
+	 */
 	public boolean serialize(String automobileKey, String fileName) {
 		boolean returnValue = false;
 		model.Automobile automobileObject;
@@ -126,7 +143,16 @@ public abstract class ProxyAutomobile {
 		return returnValue;
 	}
 
-	/* AutoChoice Implementation */
+	/* Assignment 3
+	 * 5/10/2018
+	 * ChooseAuto Implementation */
+	/**
+	 * Choose an option in an option set
+	 * @param automobileKey The automobile key
+	 * @param optionSetName The option set name
+	 * @param optionName The option name
+	 * @return true on success and false on failure
+	 */
 	public boolean setOptionChoice(String automobileKey, String optionSetName, String optionName) {
 		boolean returnValue = false;
 		model.Automobile automobileObject;
@@ -158,17 +184,44 @@ public abstract class ProxyAutomobile {
 		return returnValue;
 	}
 
-	/* scale.Scaleable Implementation */
+	/* Assignment 4
+	 * 5/29/2018
+	 * scale.Scaleable Implementation */
+	/**
+	 * Starts an operation asynchronously
+	 * @param operationNumber The operation to run
+	 * @param inputArguments The arguments for the operation
+	 */
 	public void operation(int operationNumber, String[] inputArguments) {
 		/* scale.EditOptions mimics Hello.java
 		 * It contains a switching statement to delegate the operation number */
-		EditOptions editObtionsObject = new scale.EditOptions(this, operationNumber, threadNumber++, inputArguments);
+		EditOptions editObtionsObject = new scale.EditOptions(this, operationNumber, threadNumber++, true,
+			inputArguments);
+		editObtionsObject.start();
+	}
+
+	/**
+	 * Starts an operation synchronously
+	 * @param operationNumber The operation to run
+	 * @param inputArguments The arguments for the operation
+	 */
+	public void operationSynchronous(int operationNumber, String[] inputArguments) {
+		/* scale.EditOptions mimics Hello.java
+		 * It contains a switching statement to delegate the operation number */
+		EditOptions editObtionsObject = new scale.EditOptions(this, operationNumber, threadNumber++, false,
+			inputArguments);
 		editObtionsObject.start();
 	}
 
 	/* Assignment 5
 	 * 6/12/2018
 	 * server.AutoServer Implementation */
+	/**
+	 * Builds an automobile from a properties file
+	 * @param automobileProperties The properties object
+	 * @return The automobile key if successful, null on failure
+	 * @throws exception.AutoException
+	 */
 	public String buildAutomobileFromProperties(Properties automobileProperties) throws exception.AutoException {
 		String automobileKey = null;
 		model.Automobile automobileObject = new model.Automobile();
@@ -185,11 +238,17 @@ public abstract class ProxyAutomobile {
 		return automobileTable.insertOverwrite(fileIOUtil.deserializeFromStream(socketStreamIn));
 	}
 
+	/**
+	 * Serializes an automobile to a socket stream. Does not close the stream.
+	 * @param socketStreamOut The socket stream.
+	 * @param automobileKey The automobile key for the automobile to serialize
+	 * @throws exception.AutoException
+	 */
 	public void automobileToStream(OutputStream socketStreamOut, String automobileKey) throws exception.AutoException {
 		fileIOUtil.serializeToStream(socketStreamOut, automobileTable.getByKey(automobileKey));
 	}
 
-	public void directoryToStream(OutputStream socketStreamOut) throws exception.AutoException{
+	public void directoryToStream(OutputStream socketStreamOut) throws exception.AutoException {
 		fileIOUtil.directorySerializeToStream(socketStreamOut, automobileTable.toDirectory());
 	}
 
@@ -199,23 +258,20 @@ public abstract class ProxyAutomobile {
 		while (mapIterator.hasNext()) {
 			Map.Entry<String, Automobile> mapEntry = mapIterator.next();
 			// assuming nothing is null (for performance)
-			listString.append("Car ID: ").append(mapEntry.getKey()).append("\tName=").append(mapEntry.getValue().getYear());
-			listString.append(" ").append(mapEntry.getValue().getMake()).append(" ").append(mapEntry.getValue().getModel());
+			listString.append("Car ID: ").append(mapEntry.getKey()).append("\tName=")
+				.append(mapEntry.getValue().getYear());
+			listString.append(" ").append(mapEntry.getValue().getMake()).append(" ")
+				.append(mapEntry.getValue().getModel());
 			listString.append("\tRetail Price=$").append(mapEntry.getValue().getPrice()).append("\n");
 		}
 		return listString.toString();
 	}
 
-	public model.AutomobileTable.Directory getAutomobileDirectoryMap(){
+	public model.AutomobileTable.Directory getAutomobileDirectoryMap() {
 		return automobileTable.toDirectory();
 	}
-	
+
 	public Iterator<Map.Entry<String, Automobile>> getAutomobileIterator() {
 		return automobileTable.getIterator();
 	}
-
-	/* Assignment 6
-	 * 6/23/2018
-	 * servlets.BuildSession Implementation */
-
 }

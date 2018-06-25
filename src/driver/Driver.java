@@ -5,15 +5,13 @@ import adapter.*;
 
 public class Driver {
 
-	/**
-	 * The purpose of this driver is to demonstrate: 
+	/** The purpose of this driver is to demonstrate:
 	 * 1. How automobiles are added from text files
 	 * 2. Updating option sets and options
 	 * 3. Serializing automobiles
 	 * 4. Deserializing automobiles
-	 * 5. Get automobile option set and option names and prices
-	 */
-	public static void main() {
+	 * 5. Get automobile option set and option names and prices */
+	public static void main(String[] args) {
 		BuildAuto buildAutoInterface = new BuildAuto();
 		buildAutoInterface.init(); // only call this once
 		// Build Automobile Object from a file.

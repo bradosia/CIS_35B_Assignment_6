@@ -1,10 +1,9 @@
 package server;
 
 import java.net.*;
+import java.io.*;
 
 import adapter.BuildAuto;
-
-import java.io.*;
 
 public class DefaultSocketServer extends Thread implements SocketServerInterface, SocketServerConstants {
 

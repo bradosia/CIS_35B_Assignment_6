@@ -74,7 +74,7 @@ public class DefaultSocketClient extends Thread implements SocketClientInterface
 
 	public void initCarOptionsMenu() throws AutoException {
 		try {
-			carOptionsMenu = new CarModelOptionsIO(stdIn_);
+			carOptionsMenu = new CarModelOptionsIO(this, stdIn_);
 			carOptionsMenu.openConnection(socketClientInputStream, socketClientOutputStream);
 		} catch (IOException e) {
 			// Could not initialize the car selection menu because of an IO exception

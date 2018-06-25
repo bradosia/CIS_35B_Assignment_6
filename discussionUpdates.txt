@@ -1,0 +1,38 @@
+https://deanza.instructure.com/courses/4639/discussion_topics/60896
+I wanted to edit my "Mandatory Questions for Assignment 4" post:
+
+Assignment 4 is so far the trickiest assignment in this KBB application series.
+For many class sessions I was completely lost on what to do. There are many examples given,
+but it wasn't clear how the information should be presented to understand our knowledge on threading.
+Many of the examples include wait(), sleep(), and notifyAll(), although I do not think that
+we needed to use any in our assignments. It seems that the "synchronized" qualifier and synchronized block
+are enough to get through this assignment.
+
+I was pleased that on the meeting before our assignment 4 was due, we received a big hint that
+all we needed to do was copy and refactor Hello.java and Coffee.java. My current work reflects this.
+
+It is very nice to see this application starting to build on itself. It seems threading is for a certain
+place in an application. In cases where order is important, threading is not so useful. Especially, in my
+example drivers, the order of the operations was always different so occasionally there would be an 
+exception thrown. I designed my driver to demonstrate this phenomenon.
+
+
+
+https://deanza.instructure.com/courses/4639/discussion_topics/60895
+"Mandatory Questions for Assignment 3 " I posted my response in 
+https://deanza.instructure.com/courses/4639/discussion_topics/60890
+but I want to edit it.
+
+Assignment 3 was a no brainer for refactoring. From the very beginning I had already used 
+LinkedHashMap and ArrayList for my implementations of an array. I actually had to remove them
+for assignment 1 because the instructions told us not to use them.
+
+I think the most interesting thing I have noticed about java's standard containers is that 
+many containers can be cast to the same type, but have different implementations underneath. 
+Some implementations might not be serializable (I learned this from StackOverflow).
+
+Implementing these containers ourselves would have been more of a data structures course assignment
+anyways. I am much more familiar with standard containers. The error checking on raw arrays is 
+tedious. There are so many null pointer exceptions and index out of range exceptions to handle.
+
+I think this was a good assignment for getting our feet wet in containers.

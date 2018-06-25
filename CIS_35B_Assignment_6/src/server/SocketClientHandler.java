@@ -7,7 +7,7 @@ import exception.AutoException;
 
 import java.io.*;
 
-public class SocketClientHandler extends Thread implements SocketClientInterface, SocketClientConstants {
+public class SocketClientHandler extends Thread implements server.SocketClientInterface, server.SocketClientConstants {
 	private BufferedReader reader;
 	private BufferedWriter writer;
 	private Socket socketClient;
@@ -46,9 +46,9 @@ public class SocketClientHandler extends Thread implements SocketClientInterface
 		if (DEBUG)
 			System.out.println(socketClient.getRemoteSocketAddress() + ": Started a session.");
 		try {
-			while ((strInput = reader.readLine()) != null)
+			while ((strInput = receiveInput()) != null)
 				handleInput(strInput);
-		} catch (IOException e) {
+		} catch (AutoException e) {
 			if (DEBUG)
 				System.out.println(socketClient.getRemoteSocketAddress() + ": Closed the session.");
 		}
@@ -56,8 +56,8 @@ public class SocketClientHandler extends Thread implements SocketClientInterface
 
 	public void sendOutput(String strOutput) {
 		try {
-			// escape new lines so we can send this in one go
-			strOutput = strOutput.replace("\n", "\\n");
+			// encode output to prevent transmittal errors
+			strOutput = URLEncoder.encode(strOutput, "ASCII");
 			writer.write(strOutput, 0, strOutput.length());
 			writer.newLine();
 			writer.flush();
@@ -67,9 +67,27 @@ public class SocketClientHandler extends Thread implements SocketClientInterface
 		}
 	}
 
+	public String receiveInput() throws exception.AutoException {
+		String strInput = null;
+		try {
+			strInput = reader.readLine();
+		} catch (IOException e) {
+			// Server message could not be received
+			throw new exception.AutoException(1006);
+		}
+		// decode the input
+		if (strInput != null) {
+			try {
+				strInput = URLDecoder.decode(strInput, "ASCII");
+			} catch (UnsupportedEncodingException e) {
+				// Server message could not be decoded
+				throw new exception.AutoException(1007);
+			}
+		}
+		return strInput;
+	}
+
 	public void handleInput(String strInput) {
-		// unescape new lines
-		strInput = strInput.replace("\\n", "\n");
 		String automobileKey = null;
 		if (DEBUG)
 			System.out.println(socketClient.getRemoteSocketAddress() + ": " + strInput);
@@ -112,17 +130,30 @@ public class SocketClientHandler extends Thread implements SocketClientInterface
 			break;
 		case "begin customization":
 			try {
-				strInput = reader.readLine();
-				// remove new lines and white space
-				strInput = strInput.replace("\\n", "\n").replace("\n", "").replace(" ", "");
-			} catch (IOException e) {
-				sendOutput("Failed to get request.");
+				strInput = receiveInput();
+			} catch (AutoException e) {
+				sendOutput("failed");
 				break;
 			}
+			sendOutput("data incoming...");
 			if (DEBUG)
 				System.out.println(socketClient.getRemoteSocketAddress() + ": " + strInput);
 			try {
 				buildAutoInterface.automobileToStream(socketClient.getOutputStream(), strInput);
+			} catch (AutoException e) {
+				if (DEBUG)
+					System.out.println(socketClient.getRemoteSocketAddress() + ": " + e.getMessage());
+				sendOutput("failed");
+			} catch (IOException e) {
+				if (DEBUG)
+					System.out.println(socketClient.getRemoteSocketAddress() + ": error sending automobile");
+				sendOutput("failed");
+			}
+			break;
+		case "get automobile directory":
+			sendOutput("data incoming...");
+			try {
+				buildAutoInterface.directoryToStream(socketClient.getOutputStream());
 			} catch (AutoException e) {
 				if (DEBUG)
 					System.out.println(socketClient.getRemoteSocketAddress() + ": " + e.getMessage());

@@ -1,13 +1,15 @@
 package model;
 
 import java.util.*;
+import java.io.Serializable;
 
 import exception.AutoException;
 
 /** @class AutomobileTable
  *        Keeps a hash table of all automobile objects. \n
  *        This is essentially our database to manage our automobiles. **/
-public class AutomobileTable {
+public class AutomobileTable implements Serializable {
+	private static final long serialVersionUID = -6524925073605314987L;
 	private Map<String, Automobile> automobileTable;
 
 	/* constructors */
@@ -34,8 +36,25 @@ public class AutomobileTable {
 		return automobileObject.getMake() + "-" + automobileObject.getModel() + "-" + automobileObject.getYear();
 	}
 
-	public Map<String, Automobile> getMap() {
-		return automobileTable;
+	/** Gets the map iterator allowing one to traverse the map.
+	 * @return The map iterator */
+	public Iterator<Map.Entry<String, Automobile>> getIterator() {
+		return automobileTable.entrySet().iterator();
+	}
+
+	public Directory toDirectory() {
+		Directory automobileDirectory = new Directory();
+		automobileDirectory.map = new LinkedHashMap<String, String>(automobileTable.size());
+		Iterator<Map.Entry<String, Automobile>> mapIterator = automobileTable.entrySet().iterator();
+		while (mapIterator.hasNext()) {
+			Map.Entry<String, Automobile> mapEntry = mapIterator.next();
+			StringBuffer carNameBuffer = new StringBuffer();
+			carNameBuffer.append(mapEntry.getValue().getYear());
+			carNameBuffer.append(" ").append(mapEntry.getValue().getMake()).append(" ")
+				.append(mapEntry.getValue().getModel());
+			automobileDirectory.map.put(mapEntry.getKey(), carNameBuffer.toString());
+		}
+		return automobileDirectory;
 	}
 
 	/** Inserts an automobile into the hash table. Overwrites existing
@@ -102,5 +121,10 @@ public class AutomobileTable {
 
 	public String toString() {
 		return "Automobile Table";
+	}
+	
+	public class Directory implements Serializable {
+		private static final long serialVersionUID = 8187458227654283135L;
+		public Map<String, String> map;
 	}
 }

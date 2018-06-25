@@ -15,6 +15,7 @@ FordZTW.properties
 BMW320i.txt - BMW 320i text file
 BMW320i.properties - BMW 320i properties file
 changeLog.txt - changes made to reclaim points
+discussionUpdates.txt - edits to discussion posts
 
 Tomcat Structure:
 Copy "/bin" to

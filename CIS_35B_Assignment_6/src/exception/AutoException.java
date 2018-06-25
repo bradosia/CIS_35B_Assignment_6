@@ -43,6 +43,8 @@ public class AutoException extends Exception {
 		errorMessageTable.put(202, "too many option sets for automobile");
 
 		errorMessageTable.put(300, "IO problem serializing automobile");
+		errorMessageTable.put(301, "IO problem serializing automobile directory");
+		errorMessageTable.put(302, "Automobile being serialized is a null pointer");
 
 		errorMessageTable.put(400, "IO problem deserializing automobile");
 		errorMessageTable.put(401, "IO problem deserializing automobile");
@@ -52,10 +54,10 @@ public class AutoException extends Exception {
 		errorMessageTable.put(502, "Automobile could not be found in database");
 		errorMessageTable.put(503, "Automobile database not instantiated");
 
-		errorMessageTable.put(600, "automobile is a null pointer");
-		errorMessageTable.put(601, "option set is a null pointer");
-		errorMessageTable.put(602, "option is a null pointer");
-		errorMessageTable.put(603, "could not get option set");
+		errorMessageTable.put(600, "Automobile is a null pointer");
+		errorMessageTable.put(601, "Option set is a null pointer");
+		errorMessageTable.put(602, "Option is a null pointer");
+		errorMessageTable.put(603, "Could not get option set");
 
 		errorMessageTable.put(700, "Missing make field in the automobile text file");
 		errorMessageTable.put(701, "Missing model field in the automobile text file");
@@ -77,6 +79,15 @@ public class AutoException extends Exception {
 		errorMessageTable.put(900, "Could not find the automobile properties file");
 		errorMessageTable.put(901, "Could not parse automobile properties file");
 		errorMessageTable.put(902, "Could not close automobile properties file");
+		
+		errorMessageTable.put(1000, "Automobile directory could not be received");
+		errorMessageTable.put(1001, "Could not initialize the car selection menu because of an IO exception");
+		errorMessageTable.put(1002, "Could not initialize the car selection menu because of a general exception");
+		errorMessageTable.put(1003, "Could not connect to the server");
+		errorMessageTable.put(1004, "Could not get the IO streams from the socket");
+		errorMessageTable.put(1005, "Automobile could not be received");
+		errorMessageTable.put(1006, "Server message could not be received");
+		errorMessageTable.put(1007, "Server message could not be decoded");
 	}
 
 	/* unknown exception */

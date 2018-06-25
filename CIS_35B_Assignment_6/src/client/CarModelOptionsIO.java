@@ -14,8 +14,10 @@ public class CarModelOptionsIO {
 	private OutputStream socketClientOutputStream;
 	private BufferedReader reader;
 	private BufferedWriter writer;
+	private DefaultSocketClient socketClient_;
 
-	CarModelOptionsIO(BufferedReader stdIn_) {
+	CarModelOptionsIO(DefaultSocketClient socketClient, BufferedReader stdIn_) {
+		socketClient_ = socketClient;
 		stdIn = stdIn_;
 		fileIOUtil = new util.FileIO();
 		streamIOUtil = new util.StreamIO();
@@ -71,36 +73,39 @@ public class CarModelOptionsIO {
 	 * This method is long, but breaking it up and doing more error checking is
 	 * more of a summer project. */
 	public void displayMenu3() {
+		boolean errorFlag = false;
 		System.out.println("Enter the key for the car you want to configure:");
 		sendOutput("get automobile list");
 		String fromServer = null;
 		try {
-			fromServer = reader.readLine();
-			fromServer = fromServer.replace("\\n", "\n");
+			fromServer = receiveInput();
 			System.out.println(fromServer);
-		} catch (IOException e1) {
-			System.out.println("Error: Could not read socket");
-			sendOutput("cancel properties");
-		}
-		// now user should enter the key
-		String inputString = "null";
-		try {
-			inputString = stdIn.readLine();
-		} catch (IOException e) {
-			System.out.println("Error: Could not read");
-		}
-		sendOutput("begin customization");
-		sendOutput(inputString);
-		model.Automobile automobileObject = null;
-		try {
-			automobileObject = fileIOUtil.deserializeFromStream(socketClientInputStream);
 		} catch (AutoException e) {
 			System.out.println("Error: Could not read socket");
 			sendOutput("cancel properties");
 		}
-		SelectCarOption selectCarOptions = new SelectCarOption(stdIn, automobileObject);
-		selectCarOptions.beginSelection();
-		sendOutput("pick up car");
+		// get automobile key
+		String automobileKey = "null";
+		try {
+			automobileKey = stdIn.readLine();
+		} catch (IOException e) {
+			System.out.println("Error: Could not read");
+		}
+		// get the automobile object
+		model.Automobile automobileObject = null;
+		try {
+			automobileObject = socketClient_.getAutomobile(automobileKey);
+		} catch (AutoException e) {
+			System.out.println("Error: Could not get the automobile");
+			sendOutput("cancel customization");
+			errorFlag = true;
+		}
+		// begin option selection
+		if (!errorFlag) {
+			SelectCarOption selectCarOptions = new SelectCarOption(stdIn, automobileObject);
+			selectCarOptions.beginSelection();
+			sendOutput("pick up car");
+		}
 	}
 
 	public boolean getMenuOption(String inputString) {
@@ -131,13 +136,33 @@ public class CarModelOptionsIO {
 
 	public void sendOutput(String strOutput) {
 		try {
-			// escape new lines so we can send this in one go
-			strOutput = strOutput.replace("\n", "\\n");
+			// encode output to prevent transmittal errors
+			strOutput = URLEncoder.encode(strOutput, "ASCII");
 			writer.write(strOutput, 0, strOutput.length());
 			writer.newLine();
 			writer.flush();
 		} catch (IOException e) {
 			System.out.println("Error writing");
 		}
+	}
+
+	public String receiveInput() throws exception.AutoException {
+		String strInput = null;
+		try {
+			strInput = reader.readLine();
+		} catch (IOException e) {
+			// Server message could not be received
+			throw new exception.AutoException(1006);
+		}
+		// decode the input
+		if (strInput != null) {
+			try {
+				strInput = URLDecoder.decode(strInput, "ASCII");
+			} catch (UnsupportedEncodingException e) {
+				// Server message could not be decoded
+				throw new exception.AutoException(1007);
+			}
+		}
+		return strInput;
 	}
 }

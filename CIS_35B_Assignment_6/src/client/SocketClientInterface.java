@@ -1,8 +1,12 @@
 package client;
 
-public interface SocketClientInterface
-{
-    boolean openConnection();
-    void handleSession();
-    void closeSession();
+import exception.AutoException;
+
+public interface SocketClientInterface {
+
+	void openConnection() throws AutoException;
+
+	void handleSession();
+
+	void closeSession();
 }

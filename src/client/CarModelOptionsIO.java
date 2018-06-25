@@ -14,8 +14,10 @@ public class CarModelOptionsIO {
 	private OutputStream socketClientOutputStream;
 	private BufferedReader reader;
 	private BufferedWriter writer;
+	private DefaultSocketClient socketClient_;
 
-	CarModelOptionsIO(BufferedReader stdIn_) {
+	CarModelOptionsIO(DefaultSocketClient socketClient, BufferedReader stdIn_) {
+		socketClient_ = socketClient;
 		stdIn = stdIn_;
 		fileIOUtil = new util.FileIO();
 		streamIOUtil = new util.StreamIO();
@@ -71,6 +73,7 @@ public class CarModelOptionsIO {
 	 * This method is long, but breaking it up and doing more error checking is
 	 * more of a summer project. */
 	public void displayMenu3() {
+		boolean errorFlag = false;
 		System.out.println("Enter the key for the car you want to configure:");
 		sendOutput("get automobile list");
 		String fromServer = null;
@@ -81,25 +84,28 @@ public class CarModelOptionsIO {
 			System.out.println("Error: Could not read socket");
 			sendOutput("cancel properties");
 		}
-		// now user should enter the key
-		String inputString = "null";
+		// get automobile key
+		String automobileKey = "null";
 		try {
-			inputString = stdIn.readLine();
+			automobileKey = stdIn.readLine();
 		} catch (IOException e) {
 			System.out.println("Error: Could not read");
 		}
-		sendOutput("begin customization");
-		sendOutput(inputString);
+		// get the automobile object
 		model.Automobile automobileObject = null;
 		try {
-			automobileObject = fileIOUtil.deserializeFromStream(socketClientInputStream);
+			automobileObject = socketClient_.getAutomobile(automobileKey);
 		} catch (AutoException e) {
-			System.out.println("Error: Could not read socket");
-			sendOutput("cancel properties");
+			System.out.println("Error: Could not get the automobile");
+			sendOutput("cancel customization");
+			errorFlag = true;
 		}
-		SelectCarOption selectCarOptions = new SelectCarOption(stdIn, automobileObject);
-		selectCarOptions.beginSelection();
-		sendOutput("pick up car");
+		// begin option selection
+		if (!errorFlag) {
+			SelectCarOption selectCarOptions = new SelectCarOption(stdIn, automobileObject);
+			selectCarOptions.beginSelection();
+			sendOutput("pick up car");
+		}
 	}
 
 	public boolean getMenuOption(String inputString) {
