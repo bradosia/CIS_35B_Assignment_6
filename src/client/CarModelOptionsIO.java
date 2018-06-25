@@ -75,10 +75,9 @@ public class CarModelOptionsIO {
 		sendOutput("get automobile list");
 		String fromServer = null;
 		try {
-			fromServer = reader.readLine();
-			fromServer = fromServer.replace("\\n", "\n");
+			fromServer = receiveInput();
 			System.out.println(fromServer);
-		} catch (IOException e1) {
+		} catch (AutoException e) {
 			System.out.println("Error: Could not read socket");
 			sendOutput("cancel properties");
 		}
@@ -131,13 +130,33 @@ public class CarModelOptionsIO {
 
 	public void sendOutput(String strOutput) {
 		try {
-			// escape new lines so we can send this in one go
-			strOutput = strOutput.replace("\n", "\\n");
+			// encode output to prevent transmittal errors
+			strOutput = URLEncoder.encode(strOutput, "ASCII");
 			writer.write(strOutput, 0, strOutput.length());
 			writer.newLine();
 			writer.flush();
 		} catch (IOException e) {
 			System.out.println("Error writing");
 		}
+	}
+
+	public String receiveInput() throws exception.AutoException {
+		String strInput = null;
+		try {
+			strInput = reader.readLine();
+		} catch (IOException e) {
+			// Server message could not be received
+			throw new exception.AutoException(1006);
+		}
+		// decode the input
+		if (strInput != null) {
+			try {
+				strInput = URLDecoder.decode(strInput, "ASCII");
+			} catch (UnsupportedEncodingException e) {
+				// Server message could not be decoded
+				throw new exception.AutoException(1007);
+			}
+		}
+		return strInput;
 	}
 }

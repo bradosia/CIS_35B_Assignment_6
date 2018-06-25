@@ -189,14 +189,33 @@ public abstract class ProxyAutomobile {
 		fileIOUtil.serializeToStream(socketStreamOut, automobileTable.getByKey(automobileKey));
 	}
 
+	public void directoryToStream(OutputStream socketStreamOut) throws exception.AutoException{
+		fileIOUtil.directorySerializeToStream(socketStreamOut, automobileTable.toDirectory());
+	}
+
 	public String getAutomobileList() {
 		StringBuffer listString = new StringBuffer();
-		for (Map.Entry<String, Automobile> entry : automobileTable.getMap().entrySet()) {
+		Iterator<Map.Entry<String, Automobile>> mapIterator = automobileTable.getIterator();
+		while (mapIterator.hasNext()) {
+			Map.Entry<String, Automobile> mapEntry = mapIterator.next();
 			// assuming nothing is null (for performance)
-			listString.append("Car ID: ").append(entry.getKey()).append("\tName=").append(entry.getValue().getYear());
-			listString.append(" ").append(entry.getValue().getMake()).append(" ").append(entry.getValue().getModel());
-			listString.append("\tRetail Price=$").append(entry.getValue().getPrice()).append("\n");
+			listString.append("Car ID: ").append(mapEntry.getKey()).append("\tName=").append(mapEntry.getValue().getYear());
+			listString.append(" ").append(mapEntry.getValue().getMake()).append(" ").append(mapEntry.getValue().getModel());
+			listString.append("\tRetail Price=$").append(mapEntry.getValue().getPrice()).append("\n");
 		}
 		return listString.toString();
 	}
+
+	public model.AutomobileTable.Directory getAutomobileDirectoryMap(){
+		return automobileTable.toDirectory();
+	}
+	
+	public Iterator<Map.Entry<String, Automobile>> getAutomobileIterator() {
+		return automobileTable.getIterator();
+	}
+
+	/* Assignment 6
+	 * 6/23/2018
+	 * servlets.BuildSession Implementation */
+
 }

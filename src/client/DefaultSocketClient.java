@@ -1,65 +1,98 @@
 package client;
 
 import java.net.*;
+import java.util.Iterator;
+import java.util.Map;
+import java.net.URLEncoder;
+import java.net.URLDecoder;
 
 import adapter.BuildAuto;
 import exception.AutoException;
+import model.Automobile;
 
 import java.io.*;
 
 public class DefaultSocketClient extends Thread implements SocketClientInterface, SocketClientConstants {
-	private BufferedReader stdIn;
+	private BufferedReader stdIn_;
 	private Socket socketClient;
 	private InputStream socketClientInputStream;
 	private OutputStream socketClientOutputStream;
 	private BufferedReader reader;
 	private BufferedWriter writer;
+	private util.StreamIO streamIOUtil;
+	private util.FileIO fileIOUtil;
 	private String strHost;
 	private int iPort;
 	private CarModelOptionsIO carOptionsMenu;
 
-	public DefaultSocketClient(String strHost, int iPort, BufferedReader stdIn_) {
-		stdIn = stdIn_;
+	/** Constructor
+	 * @param strHost The connection host address
+	 * @param iPort The connection port */
+	public DefaultSocketClient(String strHost, int iPort) {
 		setPort(iPort);
 		setHost(strHost);
-		carOptionsMenu = new CarModelOptionsIO(stdIn_);
-	}// constructor
+		fileIOUtil = new util.FileIO();
+		streamIOUtil = new util.StreamIO();
+	}
 
+	/** The threaded client */
 	public void run() {
-		if (openConnection()) {
+		try {
+			openConnection();
 			handleSession();
 			closeSession();
+		} catch (AutoException e) {
+			if (DEBUG) {
+				System.out.println("Host: " + strHost);
+				System.out.println("Port: " + iPort);
+				System.out.println(e.getMessage());
+			}
 		}
-	}// run
+	}
 
-	public boolean openConnection() {
+	public void setStandardIn(BufferedReader stdIn) {
+		stdIn_ = stdIn;
+	}
+
+	public void openConnection() throws AutoException {
 		try {
 			socketClient = new Socket(strHost, iPort);
 		} catch (IOException socketError) {
-			if (DEBUG)
-				System.err.println("Unable to connect to " + strHost);
-			return false;
+			// Could not connect to the server
+			throw new exception.AutoException(1003);
 		}
 		try {
 			socketClientInputStream = socketClient.getInputStream();
 			socketClientOutputStream = socketClient.getOutputStream();
 			reader = new BufferedReader(new InputStreamReader(socketClientInputStream));
 			writer = new BufferedWriter(new OutputStreamWriter(socketClientOutputStream));
-			carOptionsMenu.openConnection(socketClientInputStream, socketClientOutputStream);
-		} catch (AutoException e) {
-			if (DEBUG)
-				System.err.println("Unable to obtain stream to/from " + strHost);
-			return false;
 		} catch (Exception e) {
-			if (DEBUG)
-				System.err.println("Unable to obtain stream to/from " + strHost);
-			return false;
+			// Could not get the IO streams from the socket
+			throw new exception.AutoException(1004);
 		}
-		return true;
+	}
+
+	public void initCarOptionsMenu() throws AutoException {
+		try {
+			carOptionsMenu = new CarModelOptionsIO(stdIn_);
+			carOptionsMenu.openConnection(socketClientInputStream, socketClientOutputStream);
+		} catch (IOException e) {
+			// Could not initialize the car selection menu because of an IO exception
+			throw new exception.AutoException(1001);
+		} catch (Exception e) {
+			// Could not initialize the car selection menu because of a general exception
+			throw new exception.AutoException(1002);
+		}
 	}
 
 	public void handleSession() {
-		// BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
+		try {
+			initCarOptionsMenu();
+		} catch (AutoException e) {
+			if (DEBUG)
+				System.out.println(e.getMessage());
+		}
+
 		String strInput = "";
 		String fromServer = "";
 		if (DEBUG)
@@ -67,10 +100,10 @@ public class DefaultSocketClient extends Thread implements SocketClientInterface
 		try {
 			// block on client command
 			carOptionsMenu.displayMenu();
-			while ((strInput = stdIn.readLine()) != null) {
+			while ((strInput = stdIn_.readLine()) != null) {
 				if (carOptionsMenu.getMenuOption(strInput)) {
 					// block on server response
-					fromServer = reader.readLine();
+					fromServer = receiveInput();
 					handleInput(fromServer);
 				}
 				carOptionsMenu.displayMenu();
@@ -78,13 +111,16 @@ public class DefaultSocketClient extends Thread implements SocketClientInterface
 		} catch (IOException e) {
 			if (DEBUG)
 				System.out.println("client unexpectedly closed");
+		} catch (AutoException e) {
+			if (DEBUG)
+				System.out.println(e.getMessage());
 		}
 	}
 
 	public void sendOutput(String strOutput) {
 		try {
-			// escape new lines so we can send this in one go
-			strOutput = strOutput.replace("\n","\\n");
+			// encode output to prevent transmittal errors
+			strOutput = URLEncoder.encode(strOutput, "ASCII");
 			writer.write(strOutput, 0, strOutput.length());
 			writer.newLine();
 			writer.flush();
@@ -94,9 +130,74 @@ public class DefaultSocketClient extends Thread implements SocketClientInterface
 		}
 	}
 
+	public String receiveInput() throws exception.AutoException {
+		String strInput = null;
+		try {
+			strInput = reader.readLine();
+		} catch (IOException e) {
+			// Server message could not be received
+			throw new exception.AutoException(1006);
+		}
+		// decode the input
+		if (strInput != null) {
+			try {
+				strInput = URLDecoder.decode(strInput, "ASCII");
+			} catch (UnsupportedEncodingException e) {
+				// Server message could not be decoded
+				throw new exception.AutoException(1007);
+			}
+		}
+		return strInput;
+	}
+
+	public Iterator<Map.Entry<String, String>> getAutomobileDirectoryIterator() throws exception.AutoException {
+		String strOutput = "get automobile directory";
+		String fromServer;
+		Iterator<Map.Entry<String, String>> mapIterator = null;
+		try {
+			sendOutput(strOutput);
+			// read the status message
+			fromServer = receiveInput();
+			if (fromServer.equals("failed")) {
+				// Automobile directory could not be received
+				throw new exception.AutoException(1000);
+			} else {
+				model.AutomobileTable.Directory automobileDirectory = fileIOUtil
+					.directoryDeserializeFromStream(socketClientInputStream);
+				mapIterator = automobileDirectory.map.entrySet().iterator();
+			}
+		} catch (AutoException e) {
+			// Automobile directory could not be received
+			throw new exception.AutoException(1000);
+		}
+		return mapIterator;
+	}
+
+	public model.Automobile getAutomobile(String automobileKey) throws exception.AutoException {
+		String strOutput = "begin customization";
+		String fromServer;
+		model.Automobile automobileObject = null;
+		try {
+			sendOutput(strOutput);
+			sendOutput(automobileKey);
+			// read the status message
+			fromServer = receiveInput();
+			if (fromServer.equals("failed")) {
+				// Automobile could not be received
+				throw new exception.AutoException(1005);
+			} else {
+				automobileObject = fileIOUtil.deserializeFromStream(socketClientInputStream);
+			}
+		} catch (AutoException e) {
+			// Automobile could not be received
+			throw new exception.AutoException(1005);
+		}
+		return automobileObject;
+	}
+
 	public void handleInput(String strInput) {
 		// unescape new lines
-		strInput = strInput.replace("\\n","\n");
+		strInput = strInput.replace("\\n", "\n");
 		System.out.println(strInput);
 	}
 
@@ -128,8 +229,9 @@ public class DefaultSocketClient extends Thread implements SocketClientInterface
 			System.err.println("Unable to find local host");
 		}
 		BufferedReader stdIn = new BufferedReader(new InputStreamReader(System.in));
-		DefaultSocketClient d = new DefaultSocketClient(strLocalHost, iDAYTIME_PORT, stdIn);
-		d.start();
+		DefaultSocketClient socketClient = new DefaultSocketClient(strLocalHost, iDAYTIME_PORT);
+		socketClient.setStandardIn(stdIn);
+		socketClient.start();
 	}
 
 }// class DefaultSocketClient

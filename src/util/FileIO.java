@@ -1,6 +1,7 @@
 package util;
 
 import java.io.*;
+import java.util.Map;
 
 import model.Automobile;
 import exception.AutoException;
@@ -159,13 +160,16 @@ public class FileIO {
 		return automobileObject;
 	}
 
-	/** serializes and Automobile object object as a file
-	 * @param socketStreamOut The output stream
-	 * @param automobileProperties The Automobile properties
-	 * @throws AutoException */
+	/**
+	 * Serializes the Automobile object and writes it to a stream
+	 * @param socketStreamOut
+	 * @param automobileObject
+	 * @throws AutoException
+	 */
 	public void serializeToStream(OutputStream socketStreamOut, Automobile automobileObject) throws AutoException {
 		if (automobileObject == null) {
-			throw new exception.AutoException(300);
+			// Automobile being serialized is a null pointer
+			throw new exception.AutoException(302);
 		}
 		try {
 			ObjectOutputStream out = new ObjectOutputStream(socketStreamOut);
@@ -173,16 +177,20 @@ public class FileIO {
 			// do not close stream. let caller do this.
 			// out.close();
 		} catch (NullPointerException e) {
+			// IO problem serializing automobile
 			throw new exception.AutoException(300);
 		} catch (IOException e) {
+			// IO problem serializing automobile
 			throw new exception.AutoException(300);
 		}
 	}
 
-	/** deserializes a file as an Automobile object
-	 * @param socketStreamIn The input stream
-	 * @return The Automobile properties
-	 * @throws AutoException */
+	/**
+	 * Reads the stream and Deserializes the Automobile object
+	 * @param socketStreamIn
+	 * @return
+	 * @throws AutoException
+	 */
 	public Automobile deserializeFromStream(InputStream socketStreamIn) throws AutoException {
 		Automobile automobileObject = null;
 		try {
@@ -198,6 +206,53 @@ public class FileIO {
 			throw new exception.AutoException(300);
 		}
 		return automobileObject;
+	}
+	
+	/**
+	 * Serializes the Map object and writes it to a stream
+	 * @param socketStreamOut
+	 * @param automobileObject
+	 * @throws AutoException
+	 */
+	public void directorySerializeToStream(OutputStream socketStreamOut, model.AutomobileTable.Directory mapObject) throws AutoException {
+		if (mapObject == null) {
+			throw new exception.AutoException(300);
+		}
+		try {
+			ObjectOutputStream out = new ObjectOutputStream(socketStreamOut);
+			out.writeObject(mapObject);
+			// do not close stream. let caller do this.
+			// out.close();
+		} catch (NullPointerException e) {
+			// IO problem serializing automobile directory
+			throw new exception.AutoException(301);
+		} catch (IOException e) {
+			// IO problem serializing automobile directory
+			throw new exception.AutoException(301);
+		}
+	}
+
+	/**
+	 * Reads the stream and Deserializes the Map object
+	 * @param socketStreamIn
+	 * @return
+	 * @throws AutoException
+	 */
+	public model.AutomobileTable.Directory directoryDeserializeFromStream(InputStream socketStreamIn) throws AutoException {
+		model.AutomobileTable.Directory mapObject = null;
+		try {
+			ObjectInputStream in = new ObjectInputStream(socketStreamIn);
+			mapObject = (model.AutomobileTable.Directory) in.readObject();
+			// do not close stream. let caller do this.
+			// in.close();
+		} catch (NullPointerException e) {
+			throw new exception.AutoException(300);
+		} catch (IOException e) {
+			throw new exception.AutoException(300);
+		} catch (ClassNotFoundException e) {
+			throw new exception.AutoException(300);
+		}
+		return mapObject;
 	}
 
 	/* print() and toString() */

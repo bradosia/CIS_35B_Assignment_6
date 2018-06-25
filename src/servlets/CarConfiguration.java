@@ -2,22 +2,87 @@ package servlets;
 
 import java.io.IOException;
 import java.io.PrintWriter;
+import java.io.UnsupportedEncodingException;
+import java.net.InetAddress;
+import java.net.UnknownHostException;
+import java.util.Iterator;
+import java.util.Map;
+import java.net.URLDecoder;
 
 import javax.servlet.ServletException;
 import javax.servlet.http.HttpServlet;
 import javax.servlet.http.HttpServletRequest;
 import javax.servlet.http.HttpServletResponse;
 
+import exception.AutoException;
+
 /** The simplest possible servlet.
  *
  * @author James Duncan Davidson */
 
-public class CarConfiguration extends HttpServlet {
-	private static final long serialVersionUID = 4800503148201277286L;
+public class CarConfiguration extends HttpServlet implements client.SocketClientConstants {
+	private static final long serialVersionUID = 3770853422742103849L;
 
 	public void doGet(HttpServletRequest request, HttpServletResponse response) throws IOException, ServletException {
+		// Start the client
+		String strLocalHost = "";
+		try {
+			strLocalHost = InetAddress.getLocalHost().getHostName();
+		} catch (UnknownHostException e) {
+			System.err.println("Unable to find local host");
+		}
+		client.DefaultSocketClient socketClient = new client.DefaultSocketClient(strLocalHost, iDAYTIME_PORT);
+		// Connect to server similar to assignment 5
+		// DO NOT socketClient.start() OR A THREAD WILL START
+		model.Automobile automobileObject = null;
+		StringBuffer errorMessageBuffer = new StringBuffer();
+		boolean errorFlag = false;
+		try {
+			socketClient.openConnection();
+		} catch (AutoException e) {
+			errorMessageBuffer.append("Could not connect to the server with connection information: <br>");
+			errorMessageBuffer.append("Host: ").append(strLocalHost).append("<br>");
+			errorMessageBuffer.append("Port: ").append(iDAYTIME_PORT).append("<br><br>");
+			errorMessageBuffer
+				.append("If you are the server administrator, please make sure the server is running. <br>");
+			errorMessageBuffer.append("The server driver is located at: <br>");
+			errorMessageBuffer.append("/src/server/DefaultSocketServer<br><br>");
+			errorMessageBuffer.append("The internal error message:<br>");
+			errorMessageBuffer.append(e.getMessage());
+			errorFlag = true;
+		}
 		// get automobile key
 		String automobileKey = request.getParameter("automobileKey");
+		if (automobileKey == null) {
+			errorMessageBuffer
+				.append("Could not display automobile configuration because no automobile key was given.<BR>");
+			errorMessageBuffer.append("Please go back to the automobile selection and try again: <BR>");
+			errorMessageBuffer.append("<a href=\"/KBB/servlet/servlets.CarSelection\">Automobile selection</a>");
+			errorFlag = true;
+		} else {
+			// decodes url parameter data
+			try {
+				automobileKey = URLDecoder.decode(automobileKey, "ASCII");
+			} catch (UnsupportedEncodingException e) {
+				errorMessageBuffer.append("Could not decode the URL parameters.<BR>");
+				errorFlag = true;
+			}
+		}
+		// get automobile
+		if (!errorFlag) {
+			try {
+				automobileObject = socketClient.getAutomobile(automobileKey);
+			} catch (AutoException e) {
+				errorMessageBuffer
+					.append("Could not display automobile configuration because of an internal server error: <BR>");
+				errorMessageBuffer.append(e.getMessage());
+				errorMessageBuffer.append("<br><br>automobileKey: ");
+				errorMessageBuffer.append(automobileKey);
+				errorFlag = true;
+			}
+			socketClient.closeSession();
+		}
+
 		// set response
 		response.setContentType("text/html");
 		PrintWriter out = response.getWriter();
@@ -29,29 +94,73 @@ public class CarConfiguration extends HttpServlet {
 		String header = "Basic Car Choice";
 
 		out.println("<title>" + title + "</title>");
-		out.println("</head>");
-		out.println("<body style=\"background-color: white\">");
 
-		out.println("<a href=\"/examples/servlets/helloworld.html\">");
-		out.println("<img src=\"/examples/images/code.gif\" height=24 "
-			+ "width=24 align=right border=0 alt=\"view code\"></a>");
-		out.println("<a href=\"/examples/servlets/index.html\">");
-		out.println("<img src=\"/examples/images/return.gif\" height=24 "
-			+ "width=24 align=right border=0 alt=\"return\"></a>");
+		// style start
+		out.println("<style>");
+		out.println("body {");
+		out.println("background-color:#f1f1f1;");
+		out.println("}");
+		out.println("table {");
+		out.println("border-collapse: collapse;");
+		out.println("}");
+		out.println("table, th, td {");
+		out.println("border: 1px solid black;");
+		out.println("}");
+		out.println(".center_column {");
+		out.println("background-color:#ffffff;");
+		out.println("max-width:600px;");
+		out.println("margin:auto;");
+		out.println("padding: 15px");
+		out.println("}");
+		out.println("</style>");
+		// style end
+
+		out.println("</head>");
+		out.println("<body>");
+		out.println("<div class=\"center_column\">");
 		out.println("<h1>" + header + "</h1>");
 
-		// form start
-		out.println("<form action=\"/KBB/servlet/servlets.HelloWorldExamples\">");
-		out.println("<table>");
-		out.println("<tr><td>Year/Make/Model</td>");
-		out.println("<td>" + automobileKey + "</td>");
-		out.println("</tr>");
-		out.println("<tr><td colspan=\"2\" style=\"text-align: right\">");
-		out.println("<input type=\"submit\" value=\"Send Request\"></td>");
-		out.println("</tr>");
-		out.println("</table></form>");
-		// form end
-		
+		if (errorFlag) {
+			// error
+			out.println("<p style=\"color: red\">" + errorMessageBuffer.toString() + "</p>");
+		} else {
+			// form start
+			out.println("<form action=\"/KBB/jsp/CarPrice.jsp\">");
+			out.println("<table>");
+			out.println("<tr><td>Year</td>");
+			out.println("<td>" + automobileObject.getYear() + "</td>");
+			out.println("</tr>");
+			out.println("<tr><td>Make</td>");
+			out.println("<td>" + automobileObject.getMake() + "</td>");
+			out.println("</tr>");
+			out.println("<tr><td>Model</td>");
+			out.println("<td>" + automobileObject.getModel() + "</td>");
+			out.println("</tr>");
+
+			int i, k, n, n1;
+			n = automobileObject.length();
+			// option set
+			for (i = 0; i < n; i++) {
+				out.println("<tr><td>" + automobileObject.getOptionSetName(i) + "</td>");
+				n1 = automobileObject.getOptionSetLength(i);
+				out.println("<td><select name=\"" + automobileObject.getOptionSetName(i) + "\">");
+				for (k = 0; k < n1; k++) {
+					out.println("<option value=\"" + automobileObject.getOptionSetOptionName(i, k) + "\">");
+					out.println(automobileObject.getOptionSetOptionName(i, k));
+					out.println(" ($" + automobileObject.getOptionSetOptionPrice(i, k) + ")</option>");
+				}
+				out.println("</select></td></tr>");
+			}
+
+			out.println("<tr><td colspan=\"2\" style=\"text-align: right\">");
+			out.println("<a href=\"/KBB/servlet/servlets.CarSelection\">back</a>");
+			out.println("<input type=\"submit\" value=\"Send Request\"></td>");
+			out.println("</tr>");
+			out.println("</table></form>");
+			// form end
+		}
+
+		out.println("</div>"); // center_column
 		out.println("</body>");
 		out.println("</html>");
 	}

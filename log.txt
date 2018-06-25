@@ -1,0 +1,61 @@
+[06/24/18 12:15:56] ERROR #300: IO problem serializing automobile
+[06/24/18 12:16:04] ERROR #300: IO problem serializing automobile
+[06/24/18 13:02:19] ERROR #300: IO problem serializing automobile
+[06/24/18 13:03:00] ERROR #300: IO problem serializing automobile
+[06/24/18 13:06:20] ERROR #300: IO problem serializing automobile
+[06/24/18 13:13:21] ERROR #302: Automobile is a null pointer
+[06/24/18 13:18:15] ERROR #302: Automobile is a null pointer
+[06/24/18 13:31:36] ERROR #302: Automobile is a null pointer
+[06/24/18 13:36:49] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:50] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:50] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:51] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:51] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:52] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:52] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:53] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:54] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:59] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:36:59] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:02] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:03] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:03] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:04] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:04] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:07] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:07] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:07] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:07] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:07] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:08] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:08] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:08] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:08] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:09] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:09] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:09] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:09] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:10] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:10] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:10] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:10] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:11] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:11] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:11] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:11] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:37:33] ERROR #300: IO problem serializing automobile
+[06/24/18 13:37:48] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:38:12] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:38:13] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:38:13] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:38:13] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:40:08] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:42:10] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:42:12] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:43:05] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:43:06] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:43:06] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:43:14] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 13:59:56] ERROR #1006: Server message could not be received
+[06/24/18 14:00:38] ERROR #1006: Server message could not be received
+[06/24/18 14:00:38] ERROR #1006: Server message could not be received

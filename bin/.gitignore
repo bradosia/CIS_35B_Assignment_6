@@ -1,5 +1,10 @@
+/JSP/
+/servlets/
+/adapter/
+/client/
+/driver/
 /exception/
 /model/
-/adapter/
-/servlets/
-/JSP/
+/scale/
+/server/
+/util/
