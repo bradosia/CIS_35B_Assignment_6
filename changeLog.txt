@@ -1,9 +1,31 @@
 Change Log for the KBB project
 Assignment 2:
-Score: 16/20
-Instructor Comments: keep in mind OptionSet is not meant to be an inner class of Option. 
-Before lab 4 make sure these classes are refactored to have no inner classes.
+a. Instructor Comments: keep in mind OptionSet is not meant to be an inner class of Option. 
+	Before lab 4 make sure these classes are refactored to have no inner classes.
+b. Score: 16/20 (4 points taken off)
+c. Changes:
+	/src/model/Automobile.java
+	OptionSet is an inner class of automobile and Option is an inner class of OptionSet
+	Automobile class contains an instance of OptionSet and respective Options
+	/src/adapter/ProxyAutomobile.java
+	Increased readability, documentation, and code efficiency.
+d. Test Cases:
+	/src/driver/Driver.java
+	test driver
+e. I request the full 4 points back
 
 Assignment 4:
-Score: 12/20
-Instructor Comments:
+a. Instructor Comments: I don't see test output that shows how your code tests synch and non synch ops.
+	Where is synchronization implemented?
+b. Score: 12/20 (8 points taken off)
+c. Changes:
+	/src/model/Automobile.java
+	synchronization is implemented in the automobile class methods
+d. Test Cases:
+	/src/driver/SynchronousDriver.java
+	test driver for synchronous operations
+	/src/driver/AsynchronousDriver.java
+	test driver for asynchronous operations
+	each operation runs in its own thread. Occassionally an exception will be thrown because some option set name
+	was changed and was tried to be accessed by another thread. The stack trace is intentional!
+e. I request the full 8 points back

@@ -68,3 +68,58 @@
 [06/24/18 18:48:35] ERROR #300: IO problem serializing automobile
 [06/24/18 18:48:35] ERROR #1006: Server message could not be received
 [06/24/18 19:03:37] ERROR #302: Automobile being serialized is a null pointer
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:24:34] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:43:52] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:43:52] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:43:52] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:43:52] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:43:52] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:43:52] ERROR #800: Index out of bounds for option set option choice
+[06/24/18 20:44:14] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:14] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:14] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:14] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:14] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:15] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:15] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:15] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:15] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:15] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:17] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:44:17] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:17] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:44:17] ERROR #800: Index out of bounds for option set option choice
+[06/24/18 20:45:04] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:04] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:04] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:04] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:04] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:09] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:09] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:09] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:09] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:09] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:10] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:10] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:10] WARNING #102: Missing name attribute for option in the automobile text file
+[06/24/18 20:45:10] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:10] ERROR #500: Automobile added conficts with another automobile
+[06/24/18 20:45:10] ERROR #800: Index out of bounds for option set option choice
