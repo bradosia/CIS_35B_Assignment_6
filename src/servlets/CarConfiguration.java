@@ -1,3 +1,8 @@
+/*
+ * TextUtils.htmlEncode was not used because the package is not standard.
+ * This omission can cause issues with special characters. Avoid special characters and non-ascii.
+ */
+
 package servlets;
 
 import java.io.IOException;
@@ -125,28 +130,30 @@ public class CarConfiguration extends HttpServlet implements client.SocketClient
 			out.println("<p style=\"color: red\">" + errorMessageBuffer.toString() + "</p>");
 		} else {
 			// form start
-			out.println("<form action=\"/KBB/jsp/CarPrice.jsp\">");
+			out.println("<form method=\"get\" action=\"/KBB/jsp/CarPrice.jsp\">");
+			out.println("<input type=\"hidden\" name=\"automobileKey\" value=\"" + automobileKey + "\">");
 			out.println("<table>");
 			out.println("<tr><td>Year</td>");
-			out.println("<td>" + automobileObject.getYear() + "</td>");
+			out.println("<td>" + escapeHtml(automobileObject.getYear()) + "</td>");
 			out.println("</tr>");
 			out.println("<tr><td>Make</td>");
-			out.println("<td>" + automobileObject.getMake() + "</td>");
+			out.println("<td>" + escapeHtml(automobileObject.getMake()) + "</td>");
 			out.println("</tr>");
 			out.println("<tr><td>Model</td>");
-			out.println("<td>" + automobileObject.getModel() + "</td>");
+			out.println("<td>" + escapeHtml(automobileObject.getModel()) + "</td>");
 			out.println("</tr>");
 
 			int i, k, n, n1;
 			n = automobileObject.length();
 			// option set
 			for (i = 0; i < n; i++) {
-				out.println("<tr><td>" + automobileObject.getOptionSetName(i) + "</td>");
+				out.println("<tr><td>" + escapeHtml(automobileObject.getOptionSetName(i)) + "</td>");
 				n1 = automobileObject.getOptionSetLength(i);
-				out.println("<td><select name=\"" + automobileObject.getOptionSetName(i) + "\">");
+				out.println("<td><select name=\"" + escapeHtml(automobileObject.getOptionSetName(i)) + "\">");
 				for (k = 0; k < n1; k++) {
-					out.println("<option value=\"" + automobileObject.getOptionSetOptionName(i, k) + "\">");
-					out.println(automobileObject.getOptionSetOptionName(i, k));
+					// sanitize the value
+					out.println("<option value=\"" + escapeHtml(automobileObject.getOptionSetOptionName(i, k)) + "\">");
+					out.println(escapeHtml(automobileObject.getOptionSetOptionName(i, k)));
 					out.println(" ($" + automobileObject.getOptionSetOptionPrice(i, k) + ")</option>");
 				}
 				out.println("</select></td></tr>");
@@ -163,5 +170,17 @@ public class CarConfiguration extends HttpServlet implements client.SocketClient
 		out.println("</div>"); // center_column
 		out.println("</body>");
 		out.println("</html>");
+	}
+
+	public String escapeHtml(String stringInput) {
+		if (stringInput == null) {
+			stringInput = null;
+		} else {
+			// quick and dirty sanitizing
+			stringInput = stringInput.replace("\"", "&quot;");
+			stringInput = stringInput.replace("<", "&lt;");
+			stringInput = stringInput.replace(">", "&gt;");
+		}
+		return stringInput;
 	}
 }

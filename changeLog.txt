@@ -1,0 +1,9 @@
+Change Log for the KBB project
+Assignment 2:
+Score: 16/20
+Instructor Comments: keep in mind OptionSet is not meant to be an inner class of Option. 
+Before lab 4 make sure these classes are refactored to have no inner classes.
+
+Assignment 4:
+Score: 12/20
+Instructor Comments:

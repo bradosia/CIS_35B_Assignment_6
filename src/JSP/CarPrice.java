@@ -79,20 +79,36 @@ public class CarPrice implements client.SocketClientConstants {
 			n = automobileObject_.length();
 			// option set
 			for (i = 0; i < n; i++) {
-				out.println("<tr><td>" + automobileObject.getOptionSetName(i) + "</td>");
-				n1 = automobileObject.getOptionSetLength(i);
-				out.println("<td><select name=\"" + automobileObject.getOptionSetName(i) + "\">");
-				for (k = 0; k < n1; k++) {
-					out.println("<option value=\"" + automobileObject.getOptionSetOptionName(i, k) + "\">");
-					out.println(automobileObject.getOptionSetOptionName(i, k));
-					out.println(" ($" + automobileObject.getOptionSetOptionPrice(i, k) + ")</option>");
+				String optionSetName = automobileObject_.getOptionSetName(i);
+				String optionSetOptionChoiceName = request.getParameter(optionSetName);
+				if (optionSetOptionChoiceName != null) {
+					automobileObject_.setOptionSetChoice(optionSetName, optionSetOptionChoiceName);
 				}
-				out.println("</select></td></tr>");
 			}
 		}
 	}
 
 	public model.Automobile getAutomobile() {
 		return automobileObject_;
+	}
+
+	public String getErrorMessage() {
+		return errorMessageBuffer_.toString();
+	}
+
+	public boolean isError() {
+		return errorFlag_;
+	}
+
+	public String escapeHtml(String stringInput) {
+		if (stringInput == null) {
+			stringInput = null;
+		} else {
+			// quick and dirty sanitizing
+			stringInput = stringInput.replace("\"", "&quot;");
+			stringInput = stringInput.replace("<", "&lt;");
+			stringInput = stringInput.replace(">", "&gt;");
+		}
+		return stringInput;
 	}
 }

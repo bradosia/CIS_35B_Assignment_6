@@ -88,7 +88,7 @@ public class Automobile implements Serializable {
 		}
 		return optionSetObject;
 	}
-	
+
 	public synchronized String getOptionSetName(int OptionSetIndex) {
 		OptionSet optionSetObject = null;
 		try {
@@ -105,7 +105,7 @@ public class Automobile implements Serializable {
 		}
 		return optionSetObject.getName();
 	}
-	
+
 	public synchronized int getOptionSetLength(int OptionSetIndex) {
 		OptionSet optionSetObject = null;
 		try {
@@ -145,13 +145,11 @@ public class Automobile implements Serializable {
 		}
 		return returnValue;
 	}
-	
+
 	public synchronized String getOptionSetChoiceName(int optionSetIndex) {
 		String returnValue = null;
 		OptionSet.Option optionObject = null;
-		int optionSetIndex;
 		try {
-			optionSetIndex = findOptionSetIndex(optionSetName);
 			optionObject = getOptionSetChoiceByIndex(optionSetIndex);
 		} catch (exception.AutoException e) {
 			// nothing
@@ -181,6 +179,20 @@ public class Automobile implements Serializable {
 		return returnValue;
 	}
 
+	public synchronized Double getOptionSetChoicePrice(int optionSetIndex) {
+		Double returnValue = null;
+		OptionSet.Option optionObject = null;
+		try {
+			optionObject = getOptionSetChoiceByIndex(optionSetIndex);
+		} catch (exception.AutoException e) {
+			// nothing
+		}
+		if (optionObject != null) {
+			returnValue = optionObject.getPrice();
+		}
+		return returnValue;
+	}
+
 	/** Get the optionSet option choice by index
 	 * @param optionSetIndex optionSet index
 	 * @return null if not found and option object if found */
@@ -195,6 +207,24 @@ public class Automobile implements Serializable {
 		} catch (NullPointerException e) {
 			throw new exception.AutoException(801);
 		}
+		return returnValue;
+	}
+
+	public synchronized Double getChoiceTotalPrice() {
+		Double returnValue = null;
+		double totalPrice = 0;
+		totalPrice += getPrice();
+		int i, n;
+		n = length();
+		// option set
+		for (i = 0; i < n; i++) {
+			Double optionSetChoicePrice = getOptionSetChoicePrice(i);
+			// only add up non-null choices
+			if (optionSetChoicePrice != null) {
+				totalPrice += getOptionSetChoicePrice(i).doubleValue();
+			}
+		}
+		returnValue = new Double(totalPrice);
 		return returnValue;
 	}
 
@@ -216,7 +246,7 @@ public class Automobile implements Serializable {
 		}
 		return returnValue;
 	}
-	
+
 	public synchronized String getOptionSetOptionName(int optionSetIndex, int optionSetOptionIndex) {
 		String returnValue = null;
 		OptionSet optionSetObject = getOptionSet(optionSetIndex);
@@ -255,7 +285,7 @@ public class Automobile implements Serializable {
 		}
 		return returnValue;
 	}
-	
+
 	public synchronized Double getOptionSetOptionPrice(int optionSetIndex, int optionSetOptionIndex) {
 		double returnValue = 0;
 		OptionSet optionSetObject = getOptionSet(optionSetIndex);

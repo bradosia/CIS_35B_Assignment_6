@@ -3,13 +3,14 @@
 	/**
 	This file should be moved to this location for production:
 	/webapps/KBB/jsp/CarPrice.jsp
+	
+	TextUtils.htmlEncode was not used because the package is not standard.
+	This omission can cause issues with special characters. Avoid special characters and non-ascii.
 	*/
 %>
 <html>
 
-<jsp:useBean id="cart" scope="session" class="JSP.CarPrice" />
-
-<jsp:setProperty name="cart" property="*" />
+<jsp:useBean id="cart" scope="page" class="JSP.CarPrice" />
 <%
 	cart.processRequest(request);
 %>
@@ -36,22 +37,38 @@ table, th, td {
 	margin: auto;
 	padding: 15px
 }
+
+.total_row {
+	font-weight: bold;
+}
+}
 </style>
 </head>
 <body>
 	<div class="center_column">
 		<h1>Car Pricing Summary</h1>
+		<%
+			if (cart.isError()) {
+		%>
+		<p style="color: red">
+			<%
+				out.print(cart.getErrorMessage());
+			%>
+		</p>
+		<%
+			} else {
+		%>
 		<p>Here is what you selected:</p>
 		<table>
 			<tbody>
 				<tr>
 					<td>
 						<%
-							out.print(cart.getAutomobile().getYear());
-							out.print(" ");
-							out.print(cart.getAutomobile().getMake());
-							out.print(" ");
-							out.print(cart.getAutomobile().getModel());
+							out.print(cart.escapeHtml(cart.getAutomobile().getYear()));
+								out.print(" ");
+								out.print(cart.escapeHtml(cart.getAutomobile().getMake()));
+								out.print(" ");
+								out.print(cart.escapeHtml(cart.getAutomobile().getModel()));
 						%>
 					</td>
 					<td>base price</td>
@@ -62,20 +79,20 @@ table, th, td {
 				</tr>
 				<%
 					int i, n;
-					n = cart.getAutomobile().length();
-					// option set
-					for (i = 0; i < n; i++) {
+						n = cart.getAutomobile().length();
+						// option set
+						for (i = 0; i < n; i++) {
 				%>
 
 				<tr>
 					<td>
 						<%
-							out.print(cart.getAutomobile().optionSetName(i));
+							out.print(cart.escapeHtml(cart.getAutomobile().getOptionSetName(i)));
 						%>
 					</td>
 					<td>
 						<%
-							out.print(cart.getAutomobile().getOptionSetChoiceName(i));
+							out.print(cart.escapeHtml(cart.getAutomobile().getOptionSetChoiceName(i)));
 						%>
 					</td>
 					<td>
@@ -91,12 +108,15 @@ table, th, td {
 					<td>Total</td>
 					<td></td>
 					<td>$<%
-						out.print(cart.getAutomobile().getChoiceTotalPrice(i));
+						out.print(cart.getAutomobile().getChoiceTotalPrice());
 					%>
 					</td>
 				</tr>
 			</tbody>
 		</table>
+		<%
+			}
+		%>
 	</div>
 
 

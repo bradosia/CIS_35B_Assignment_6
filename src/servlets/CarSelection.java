@@ -1,3 +1,8 @@
+/*
+ * TextUtils.htmlEncode was not used because the package is not standard.
+ * This omission can cause issues with special characters. Avoid special characters and non-ascii.
+ */
+
 package servlets;
 
 import java.io.IOException;
@@ -114,7 +119,7 @@ public class CarSelection extends HttpServlet implements client.SocketClientCons
 			out.println("<p style=\"color: red\">" + errorMessageBuffer.toString() + "</p>");
 		} else {
 			// form start
-			out.println("<form action=\"/KBB/servlet/servlets.CarConfiguration\">");
+			out.println("<form method=\"get\" action=\"/KBB/servlet/servlets.CarConfiguration\">");
 			out.println("<table style=\"border\">");
 			out.println("<tr><td>Year/Make/Model</td>");
 			out.println("<td>");
@@ -122,7 +127,7 @@ public class CarSelection extends HttpServlet implements client.SocketClientCons
 			while (directoryIterator.hasNext()) {
 				Map.Entry<String, String> directoryEntry = directoryIterator.next();
 				out.println("<option value=\"" + directoryEntry.getKey() + "\">");
-				out.println(directoryEntry.getValue());
+				out.println(escapeHtml(directoryEntry.getValue()));
 				out.println("</option>");
 			}
 			out.println("</select>");
@@ -138,5 +143,17 @@ public class CarSelection extends HttpServlet implements client.SocketClientCons
 		out.println("</div>"); // center_column
 		out.println("</body>");
 		out.println("</html>");
+	}
+	
+	public String escapeHtml(String stringInput) {
+		if (stringInput == null) {
+			stringInput = null;
+		} else {
+			// quick and dirty sanitizing
+			stringInput = stringInput.replace("\"", "&quot;");
+			stringInput = stringInput.replace("<", "&lt;");
+			stringInput = stringInput.replace(">", "&gt;");
+		}
+		return stringInput;
 	}
 }

@@ -59,3 +59,12 @@
 [06/24/18 13:59:56] ERROR #1006: Server message could not be received
 [06/24/18 14:00:38] ERROR #1006: Server message could not be received
 [06/24/18 14:00:38] ERROR #1006: Server message could not be received
+[06/24/18 17:51:08] ERROR #1006: Server message could not be received
+[06/24/18 17:51:08] ERROR #1006: Server message could not be received
+[06/24/18 17:51:08] ERROR #1006: Server message could not be received
+[06/24/18 18:17:01] ERROR #1006: Server message could not be received
+[06/24/18 18:17:01] ERROR #1006: Server message could not be received
+[06/24/18 18:17:01] ERROR #1006: Server message could not be received
+[06/24/18 18:48:35] ERROR #300: IO problem serializing automobile
+[06/24/18 18:48:35] ERROR #1006: Server message could not be received
+[06/24/18 19:03:37] ERROR #302: Automobile being serialized is a null pointer
